@@ -1,0 +1,8 @@
+{
+  "crontab": "* * * * *",
+  "n_vocab": 2,
+  "n_examples": 2,
+  "min_len": 0,
+  "max_len": 100,
+  "recipients": [""]
+}

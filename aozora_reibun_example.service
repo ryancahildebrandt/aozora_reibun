@@ -1,0 +1,12 @@
+[Unit]
+Description=Aozora Reibun 青空例文
+After=network.target
+
+[Service]
+Type=simple
+User=<USER>
+WorkingDirectory=<ABSOLUTE PATH TO aozora_reibun REPO>
+ExecStart=<ABSOLUTE PATH TO aozora_reibun EXECUTABLE>
+
+[Install]
+WantedBy=multi-user.target

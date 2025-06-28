@@ -1,0 +1,69 @@
+{{- define "body" -}}
+{{-  range . -}}
+<body>
+<h1>{{-  .Sentence  -}}</h1>
+<table>
+    {{-  range .Lookups  -}}
+    {{-  $query := .Query  -}}
+    <thead>
+        <tr>
+            {{-  range .Words  -}}
+            <th><h2>{{-  $query  -}}</h2></th>
+            {{-  end  -}}
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            {{-  range .Words  -}}
+            <td style="vertical-align:top">Kanji:{{- .Reading.Kanji -}}<br>Kana:{{- .Reading.Kana -}}<br>Furigana:{{- .Reading.Furigana -}}<br>
+                {{-  range .Senses  -}}
+                Gloss:
+                    {{- range .Glosses -}}
+                    {{-  .  -}};
+                    {{-  end  -}}
+                    <br>
+                Part Of Speech:
+                    {{-  range .POS  -}}
+                    {{- . -}}
+                    {{-  end  -}}
+                    <br>
+                {{-  end  -}}
+                <a href="https://jotoba.de/search/default/{{- $query -}}?l=en-US">Jotoba</a><br>
+            </td>
+            {{-  end  -}}
+        </tr>
+    </tbody>
+    {{-  end  -}}
+    </table>
+
+    <table>
+    {{-  range .Lookups  -}}
+    <thead>
+        <tr>
+            {{-  range .Kanji  -}}
+            <th><h2>{{- .Literal -}}</h2></th>
+            {{-  end  -}}
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            {{-  range .Kanji  -}}
+            <td style="vertical-align:top">
+                Onyomi:[{{- range .Onyomi -}}{{- . -}},{{- end -}}]<br>
+                Kunyomi:[{{- range .Kunyomi -}}{{- . -}},{{- end -}}]<br>
+                StrokeCount:{{- .StrokeCount -}}<br>
+                Parts:[{{- range .Parts -}}{{- . -}},{{- end -}}]<br>
+                Radical:{{- .Radical -}}<br>
+                Grade:{{- .Grade -}}<br>
+                Frequency:{{- .Frequency -}}<br>
+                JLPT:{{- .JLPT -}}<br>
+                <a href="https://jotoba.de/search/default/{{- .Literal -}}?l=en-US">Jotoba</a><br>
+            </td>
+            {{-  end  -}}
+        </tr>
+    </tbody>
+    {{-  end  -}}
+    </table>
+</body>
+{{-  end  -}}
+{{-  end  -}}
