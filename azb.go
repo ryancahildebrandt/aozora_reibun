@@ -26,7 +26,7 @@ func constructQuery(v []string, c ConfigFields) string {
 			b.WriteString(" OR")
 		}
 	}
-	b.WriteString(" LIMIT 100000")
+	b.WriteString(" ORDER BY random() LIMIT 100000")
 
 	return b.String()
 }
