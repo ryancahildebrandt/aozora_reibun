@@ -49,6 +49,7 @@
         <tr>
             {{-  range .Kanji  -}}
             <td style="vertical-align:top">
+                Meanings:[{{- range .Meanings -}}{{- . -}},{{- end -}}]<br>
                 Onyomi:[{{- range .Onyomi -}}{{- . -}},{{- end -}}]<br>
                 Kunyomi:[{{- range .Kunyomi -}}{{- . -}},{{- end -}}]<br>
                 StrokeCount:{{- .StrokeCount -}}<br>
