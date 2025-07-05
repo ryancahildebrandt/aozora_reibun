@@ -34,7 +34,7 @@ func loadCredentials() (string, string, error) {
 	return f, p, err
 }
 
-func SendEmail(b string, c ConfigFields) error {
+func SendEmail(v []string, b string, c ConfigFields) error {
 	var (
 		from     string
 		password string
@@ -49,7 +49,7 @@ func SendEmail(b string, c ConfigFields) error {
 	}
 
 	auth = smtp.PlainAuth("", from, password, "smtp.gmail.com")
-	msg = fmt.Appendf([]byte{}, "%s", fmt.Sprintf("Subject: 青空例文 %s\r\nContent-Type: text/html; charset=UTF-8\r\n\r\n%s", time.Now().Local().Format("2006.01.02"), b))
+	msg = fmt.Appendf([]byte{}, "%s", fmt.Sprintf("Subject: 青空例文 %s %s\r\nContent-Type: text/html; charset=UTF-8\r\n\r\n%s", time.Now().Local().Format("2006.01.02"), v, b))
 
 	err = smtp.SendMail("smtp.gmail.com:587", auth, from, c.Recipients, msg)
 	if err != nil {

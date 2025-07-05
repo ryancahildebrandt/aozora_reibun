@@ -66,7 +66,7 @@ func main() {
 	}
 	log.Printf("loaded cronjob successfully")
 
-	err = SendEmail(fmt.Sprintf("<p>This email confirms that Aozora Reibun has started successfully with config %+v\n </p>", c), c)
+	err = SendEmail([]string{"Confirmation"}, fmt.Sprintf("<p>This email confirms that Aozora Reibun has started successfully with config %+v\n </p>", c), c)
 	if err != nil {
 		log.Fatal(err)
 	}

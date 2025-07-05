@@ -64,7 +64,7 @@ func Test_sampleSentences(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := sampleSentences(tt.args.s, tt.args.m, tt.args.n)
+			_, got, err := sampleSentences(tt.args.s, tt.args.m, tt.args.n)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("sampleSentences() error = %v, wantErr %v", err, tt.wantErr)
 			}

@@ -18,10 +18,11 @@ func job(sq SentenceQueue, t *tokenizer.Tokenizer, c ConfigFields) error {
 		b   strings.Builder
 		ss  []string
 		sss []SentenceLookups
+		vv  []string
 		l   SentenceLookups
 	)
 
-	ss, err = sampleSentences(sq, c.NVocab, c.NExamples)
+	vv, ss, err = sampleSentences(sq, c.NVocab, c.NExamples)
 	if err != nil {
 		log.Fatal(err)
 		return err
@@ -42,7 +43,7 @@ func job(sq SentenceQueue, t *tokenizer.Tokenizer, c ConfigFields) error {
 		return err
 	}
 
-	err = SendEmail(b.String(), c)
+	err = SendEmail(vv, b.String(), c)
 
 	return err
 }
