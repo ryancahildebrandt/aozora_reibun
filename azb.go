@@ -9,32 +9,19 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"strings"
 )
 
-func constructQuery(v []string, c ConfigFields) string {
-	var b strings.Builder
-
-	b.WriteString("WITH s AS (SELECT UNNEST(STR_SPLIT_REGEX(本文, '\\.|。|？|\\?|!|！')) AS sentences FROM texts) SELECT sentences FROM s WHERE CHAR_LENGTH(sentences) BETWEEN ")
-	b.WriteString(fmt.Sprintf("%v AND %v", c.MinLen, c.MaxLen))
-	if len(v) != 0 {
-		b.WriteString(" AND")
-	}
-	for i, w := range v {
-		b.WriteString(fmt.Sprintf(" CONTAINS(sentences, '%s')", w))
-		if i != len(v)-1 {
-			b.WriteString(" OR")
-		}
-	}
-	b.WriteString(" ORDER BY random() LIMIT 100000")
-
-	return b.String()
+func constructQuery(c ConfigFields) string {
+	return fmt.Sprintf("WITH a AS (SELECT UNNEST(STR_SPLIT_REGEX(本文, '\\.|。|？|\\?|!|！')) AS sentences FROM texts), b AS (SELECT sentences FROM a WHERE LENGTH(sentences) BETWEEN %v AND %v), c AS (SELECT * AS vocab FROM read_csv('vocab.txt', header=false) ORDER BY RANDOM() LIMIT 100), d AS (SELECT c.vocab, b.sentences, ROW_NUMBER() OVER (PARTITION BY c.vocab ORDER BY RANDOM()) as rownum FROM b LEFT JOIN c ON (CONTAINS(b.sentences, c.vocab))) SELECT vocab, sentences FROM d WHERE rownum <= 100", c.MinLen, c.MaxLen)
 }
 
-func getSentences(db *sql.DB, q string) ([]string, error) {
-	var res []string
-	var err error
-	var text string
+func getSentences(db *sql.DB, q string) (SentenceQueue, error) {
+	var (
+		res SentenceQueue = make(map[string][]string)
+		err error
+		v   string
+		s   string
+	)
 
 	rows, err := db.Query(q)
 	if err != nil {
@@ -43,8 +30,8 @@ func getSentences(db *sql.DB, q string) ([]string, error) {
 	defer rows.Close()
 
 	for rows.Next() {
-		rows.Scan(&text)
-		res = append(res, text)
+		rows.Scan(&v, &s)
+		res[v] = append(res[v], s)
 	}
 
 	return res, err

@@ -6,38 +6,9 @@
 package main
 
 import (
-	"fmt"
 	"slices"
 	"testing"
 )
-
-func Test_enqueueSentences(t *testing.T) {
-	type args struct {
-		s []string
-		v []string
-	}
-	tests := []struct {
-		name string
-		args args
-		want SentenceQueue
-	}{
-		{name: "", args: args{v: []string{}, s: []string{}}, want: SentenceQueue{}},
-		{name: "", args: args{v: []string{""}, s: []string{}}, want: SentenceQueue{}},
-		{name: "", args: args{v: []string{}, s: []string{""}}, want: SentenceQueue{}},
-		{name: "", args: args{v: []string{""}, s: []string{""}}, want: SentenceQueue{"": []string{""}}},
-
-		{name: "", args: args{v: []string{"a"}, s: []string{"a1"}}, want: SentenceQueue{"a": []string{"a1"}}},
-		{name: "", args: args{v: []string{"a", "b", "b"}, s: []string{"a1"}}, want: SentenceQueue{"a": []string{"a1"}}},
-		{name: "", args: args{v: []string{"a", "b", "c"}, s: []string{"a1", "a2", "b1", "d2"}}, want: SentenceQueue{"a": []string{"a1", "a2"}, "b": []string{"b1"}}},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := enqueueSentences(tt.args.s, tt.args.v); fmt.Sprint(got) != fmt.Sprint(tt.want) {
-				t.Errorf("enqueueSentences(%v, %v) = %v, want %v", tt.args.s, tt.args.v, got, tt.want)
-			}
-		})
-	}
-}
 
 func Test_sampleSentences(t *testing.T) {
 	type args struct {

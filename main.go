@@ -19,32 +19,25 @@ import (
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
-	voc, err := ReadVocab()
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Printf("read vocab successfully %s", voc)
-
 	c, err := ReadConfig()
 	if err != nil {
 		log.Fatal(err)
 	}
 	log.Printf("read config successfully %+v\n", c)
 
-	query := constructQuery(voc, c)
+	query := constructQuery(c)
 	db, err := sql.Open("duckdb", "./data/aozora_corpus.db")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer db.Close()
 
-	sentences, err := getSentences(db, query)
+	sq, err := getSentences(db, query)
 	if err != nil {
 		log.Fatal(err)
 	}
 	log.Printf("read sentences successfully")
 
-	sq := enqueueSentences(sentences, voc)
 	t, err := tokenizer.New(ipa.Dict(), tokenizer.OmitBosEos())
 	if err != nil {
 		log.Fatal(err)

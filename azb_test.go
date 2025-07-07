@@ -11,7 +11,6 @@ import (
 
 func Test_constructQuery(t *testing.T) {
 	type args struct {
-		v []string
 		c ConfigFields
 	}
 	tests := []struct {
@@ -19,20 +18,13 @@ func Test_constructQuery(t *testing.T) {
 		args args
 		want string
 	}{
-		{name: "", args: args{v: []string{}, c: ConfigFields{Crontab: "", NVocab: 0, NExamples: 0, MinLen: 0, MaxLen: 0}}, want: "WITH s AS (SELECT UNNEST(STR_SPLIT_REGEX(本文, '\\.|。|？|\\?|!|！')) AS sentences FROM texts) SELECT sentences FROM s WHERE CHAR_LENGTH(sentences) BETWEEN 0 AND 0 ORDER BY random() LIMIT 100000"},
-		{name: "", args: args{v: []string{""}, c: ConfigFields{Crontab: "", NVocab: 0, NExamples: 0, MinLen: 0, MaxLen: 0}}, want: "WITH s AS (SELECT UNNEST(STR_SPLIT_REGEX(本文, '\\.|。|？|\\?|!|！')) AS sentences FROM texts) SELECT sentences FROM s WHERE CHAR_LENGTH(sentences) BETWEEN 0 AND 0 AND CONTAINS(sentences, '') ORDER BY random() LIMIT 100000"},
-		{name: "", args: args{v: []string{"a", ""}, c: ConfigFields{Crontab: "", NVocab: 0, NExamples: 0, MinLen: 0, MaxLen: 0}}, want: "WITH s AS (SELECT UNNEST(STR_SPLIT_REGEX(本文, '\\.|。|？|\\?|!|！')) AS sentences FROM texts) SELECT sentences FROM s WHERE CHAR_LENGTH(sentences) BETWEEN 0 AND 0 AND CONTAINS(sentences, 'a') OR CONTAINS(sentences, '') ORDER BY random() LIMIT 100000"},
-		{name: "", args: args{v: []string{"a", "b", "c", "d"}, c: ConfigFields{Crontab: "", NVocab: 0, NExamples: 0, MinLen: 0, MaxLen: 0}}, want: "WITH s AS (SELECT UNNEST(STR_SPLIT_REGEX(本文, '\\.|。|？|\\?|!|！')) AS sentences FROM texts) SELECT sentences FROM s WHERE CHAR_LENGTH(sentences) BETWEEN 0 AND 0 AND CONTAINS(sentences, 'a') OR CONTAINS(sentences, 'b') OR CONTAINS(sentences, 'c') OR CONTAINS(sentences, 'd') ORDER BY random() LIMIT 100000"},
-
-		{name: "", args: args{v: []string{}, c: ConfigFields{Crontab: "", NVocab: 0, NExamples: 0, MinLen: 0, MaxLen: 100}}, want: "WITH s AS (SELECT UNNEST(STR_SPLIT_REGEX(本文, '\\.|。|？|\\?|!|！')) AS sentences FROM texts) SELECT sentences FROM s WHERE CHAR_LENGTH(sentences) BETWEEN 0 AND 100 ORDER BY random() LIMIT 100000"},
-		{name: "", args: args{v: []string{""}, c: ConfigFields{Crontab: "", NVocab: 0, NExamples: 0, MinLen: 0, MaxLen: 100}}, want: "WITH s AS (SELECT UNNEST(STR_SPLIT_REGEX(本文, '\\.|。|？|\\?|!|！')) AS sentences FROM texts) SELECT sentences FROM s WHERE CHAR_LENGTH(sentences) BETWEEN 0 AND 100 AND CONTAINS(sentences, '') ORDER BY random() LIMIT 100000"},
-		{name: "", args: args{v: []string{"a", ""}, c: ConfigFields{Crontab: "", NVocab: 0, NExamples: 0, MinLen: 0, MaxLen: 100}}, want: "WITH s AS (SELECT UNNEST(STR_SPLIT_REGEX(本文, '\\.|。|？|\\?|!|！')) AS sentences FROM texts) SELECT sentences FROM s WHERE CHAR_LENGTH(sentences) BETWEEN 0 AND 100 AND CONTAINS(sentences, 'a') OR CONTAINS(sentences, '') ORDER BY random() LIMIT 100000"},
-		{name: "", args: args{v: []string{"a", "b", "c", "d"}, c: ConfigFields{Crontab: "", NVocab: 0, NExamples: 0, MinLen: 0, MaxLen: 100}}, want: "WITH s AS (SELECT UNNEST(STR_SPLIT_REGEX(本文, '\\.|。|？|\\?|!|！')) AS sentences FROM texts) SELECT sentences FROM s WHERE CHAR_LENGTH(sentences) BETWEEN 0 AND 100 AND CONTAINS(sentences, 'a') OR CONTAINS(sentences, 'b') OR CONTAINS(sentences, 'c') OR CONTAINS(sentences, 'd') ORDER BY random() LIMIT 100000"},
+		{name: "", args: args{c: ConfigFields{Crontab: "", NVocab: 0, NExamples: 0, MinLen: 0, MaxLen: 0}}, want: "WITH a AS (SELECT UNNEST(STR_SPLIT_REGEX(本文, '\\.|。|？|\\?|!|！')) AS sentences FROM texts), b AS (SELECT sentences FROM a WHERE LENGTH(sentences) BETWEEN 0 AND 0), c AS (SELECT * AS vocab FROM read_csv('vocab.txt', header=false) ORDER BY RANDOM() LIMIT 100), d AS (SELECT c.vocab, b.sentences, ROW_NUMBER() OVER (PARTITION BY c.vocab ORDER BY RANDOM()) as rownum FROM b LEFT JOIN c ON (CONTAINS(b.sentences, c.vocab))) SELECT vocab, sentences FROM d WHERE rownum <= 100"},
+		{name: "", args: args{c: ConfigFields{Crontab: "", NVocab: 0, NExamples: 0, MinLen: 0, MaxLen: 100}}, want: "WITH a AS (SELECT UNNEST(STR_SPLIT_REGEX(本文, '\\.|。|？|\\?|!|！')) AS sentences FROM texts), b AS (SELECT sentences FROM a WHERE LENGTH(sentences) BETWEEN 0 AND 100), c AS (SELECT * AS vocab FROM read_csv('vocab.txt', header=false) ORDER BY RANDOM() LIMIT 100), d AS (SELECT c.vocab, b.sentences, ROW_NUMBER() OVER (PARTITION BY c.vocab ORDER BY RANDOM()) as rownum FROM b LEFT JOIN c ON (CONTAINS(b.sentences, c.vocab))) SELECT vocab, sentences FROM d WHERE rownum <= 100"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := constructQuery(tt.args.v, tt.args.c); got != tt.want {
-				t.Errorf("constructQuery(%v) = %v, want %v", tt.args.v, got, tt.want)
+			if got := constructQuery(tt.args.c); got != tt.want {
+				t.Errorf("constructQuery() = %v, want %v", got, tt.want)
 			}
 		})
 	}

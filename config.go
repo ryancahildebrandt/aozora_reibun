@@ -9,7 +9,6 @@ import (
 	"encoding/json"
 	"io"
 	"os"
-	"strings"
 )
 
 type ConfigFields struct {
@@ -35,19 +34,4 @@ func ReadConfig() (ConfigFields, error) {
 	err = json.NewDecoder(file).Decode(&fields)
 
 	return fields, err
-}
-
-func ReadVocab() ([]string, error) {
-	var (
-		vocab []string
-		b     []byte
-		err   error
-	)
-
-	b, err = os.ReadFile("./vocab.txt")
-	if err != nil {
-		return vocab, err
-	}
-	vocab = strings.Split(string(b), "\n")
-	return vocab, err
 }

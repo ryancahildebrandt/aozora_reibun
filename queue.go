@@ -9,7 +9,6 @@ import (
 	"errors"
 	"log"
 	"math/rand"
-	"strings"
 )
 
 type SentenceQueue = map[string][]string
@@ -51,21 +50,4 @@ func sampleSentences(s SentenceQueue, v int, e int) ([]string, []string, error) 
 	}
 
 	return vv, ss, err
-}
-
-func enqueueSentences(s []string, v []string) SentenceQueue {
-	var m SentenceQueue = make(map[string][]string)
-
-	for _, voc := range v {
-		for _, sent := range s {
-			if strings.Contains(sent, voc) {
-				m[voc] = append(m[voc], sent)
-			}
-		}
-		if len(m[voc]) == 0 {
-			log.Printf("no queried sentences contain vocab %v, so it will not be included in the sentence queue", voc)
-			delete(m, voc)
-		}
-	}
-	return m
 }
