@@ -95,6 +95,9 @@ func queryWord(w string) (WordResponseBody, error) {
 
 func queryKanji(w string) (KanjiResponseBody, error) {
 	b, err := json.Marshal(RequestBody{w, "English", false})
+	if err != nil {
+		log.Fatal(err)
+	}
 	req, err := http.NewRequest(http.MethodPost, "https://jotoba.de/api/search/kanji", bytes.NewBuffer(b))
 	if err != nil {
 		log.Fatal(err)

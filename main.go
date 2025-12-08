@@ -6,14 +6,17 @@
 package main
 
 import (
+	"bufio"
 	"database/sql"
 	"fmt"
 	"log"
+	"os"
+	"strings"
 
 	"github.com/go-co-op/gocron/v2"
 	"github.com/ikawaha/kagome-dict/ipa"
 	"github.com/ikawaha/kagome/v2/tokenizer"
-	_ "github.com/marcboeker/go-duckdb/v2"
+	_ "modernc.org/sqlite"
 )
 
 func main() {
@@ -25,14 +28,27 @@ func main() {
 	}
 	log.Printf("read config successfully %+v\n", c)
 
-	query := constructQuery(c)
-	db, err := sql.Open("duckdb", "./data/aozora_corpus.db")
+	file, err := os.Open("./vocab.txt")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	vocab := []string{}
+	for scanner.Scan() {
+		vocab = append(vocab, strings.TrimSpace(scanner.Text()))
+	}
+	log.Printf("read vocab successfully")
+
+	db, err := sql.Open("sqlite", "./data/aozora_corpus.db")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer db.Close()
 
-	sq, err := getSentences(db, query)
+	query := constructQuery(c, vocab)
+	sq, err := getSentences(db, query, vocab)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -9,17 +9,17 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"strings"
 )
 
-func constructQuery(c ConfigFields) string {
-	return fmt.Sprintf("WITH a AS (SELECT UNNEST(STR_SPLIT_REGEX(本文, '\\.|。|？|\\?|!|！')) AS sentences FROM texts), b AS (SELECT sentences FROM a WHERE LENGTH(sentences) BETWEEN %v AND %v), c AS (SELECT * AS vocab FROM read_csv('vocab.txt', header=false) ORDER BY RANDOM() LIMIT 100), d AS (SELECT c.vocab, b.sentences, ROW_NUMBER() OVER (PARTITION BY c.vocab ORDER BY RANDOM()) as rownum FROM b LEFT JOIN c ON (CONTAINS(b.sentences, c.vocab))) SELECT vocab, sentences FROM d WHERE rownum <= 100", c.MinLen, c.MaxLen)
+func constructQuery(c ConfigFields, v []string) string {
+	return fmt.Sprintf("SELECT text FROM vtexts WHERE text MATCH '%s' AND LENGTH(text) BETWEEN %v AND %v ORDER BY RANDOM();", strings.Join(v, " OR "), c.MinLen, c.MaxLen)
 }
 
-func getSentences(db *sql.DB, q string) (SentenceQueue, error) {
+func getSentences(db *sql.DB, q string, v []string) (SentenceQueue, error) {
 	var (
 		res SentenceQueue = make(map[string][]string)
 		err error
-		v   string
 		s   string
 	)
 
@@ -30,8 +30,12 @@ func getSentences(db *sql.DB, q string) (SentenceQueue, error) {
 	defer rows.Close()
 
 	for rows.Next() {
-		rows.Scan(&v, &s)
-		res[v] = append(res[v], s)
+		rows.Scan(&s)
+		for _, word := range v {
+			if strings.Contains(s, word) {
+				res[word] = append(res[word], s)
+			}
+		}
 	}
 
 	return res, err

@@ -64,7 +64,8 @@ PASSWORD=<email password>
 
 Notes:
 
-- I recommend running the go binary (./aozora_reibun) as a systemd service using the provided example service file.
+- ~~I recommend running the go binary (./aozora_reibun) as a systemd service using the provided example service file.~~
+- Build & run with the included dockerfile (don't forget to set up your .env)
 - It will re-query the database on each restart of the service.
 - You can update the vocab and config at any time but you'll need to restart the service to have the changes reflected.
 - Email limits and security concerns will come down to and be handled by your email provider/service.
