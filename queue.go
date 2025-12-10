@@ -39,10 +39,9 @@ func sampleSentences(s SentenceQueue, v int, e int) ([]string, []string, error) 
 	}
 
 	for _, k := range keys {
-		if e > len(k) {
-			log.Printf("not enough example sentences for vocab %s", k)
-			ss = s[k][:len(k)]
-			return vv, ss, err
+		if e > len(s[k]) {
+			log.Printf("not enough example sentences for vocab %s, skipping", k)
+			continue
 		}
 		rand.Shuffle(len(s[k]), func(i, j int) { s[k][i], s[k][j] = s[k][j], s[k][i] })
 		vv = append(vv, k)

@@ -27,10 +27,11 @@ func Test_sampleSentences(t *testing.T) {
 		{name: "", args: args{s: SentenceQueue{"": []string{""}}, m: 0, n: 1}, want: []string{}, wantErr: true},
 		{name: "", args: args{s: SentenceQueue{"a": []string{"a1", "a2"}, "b": []string{"b1", "b2"}, "c": []string{"c1", "c2"}}, m: 4, n: 1}, want: []string{}, wantErr: true},
 
+		{name: "", args: args{s: SentenceQueue{"a": []string{"a1", "a2"}, "b": []string{"b1", "b2"}, "c": []string{"c1", "c2"}}, m: 1, n: 4}, want: []string{}, wantErr: false},
+
 		{name: "", args: args{s: SentenceQueue{"": []string{""}}, m: 1, n: 1}, want: []string{}, wantErr: false},
 		{name: "", args: args{s: SentenceQueue{"a": []string{""}, "b": []string{""}}, m: 1, n: 1}, want: []string{""}, wantErr: false},
 		{name: "", args: args{s: SentenceQueue{"a": []string{"a1", "a2"}, "b": []string{"b1", "b2"}}, m: 1, n: 1}, want: []string{}, wantErr: false},
-		{name: "", args: args{s: SentenceQueue{"a": []string{"a1", "a2"}, "b": []string{"b1", "b2"}, "c": []string{"c1", "c2"}}, m: 1, n: 4}, want: []string{}, wantErr: false},
 		{name: "", args: args{s: SentenceQueue{"a": []string{"a1", "a2"}, "b": []string{"b1", "b2"}, "c": []string{"c1", "c2"}}, m: 1, n: 1}, want: []string{}, wantErr: false},
 	}
 	for _, tt := range tests {
