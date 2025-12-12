@@ -12,7 +12,7 @@
 This is a pretty barebones language practice service that:
 
 - Reads in a provided vocabulary list
-- Samples sentences from the Aozora Bunko Corpus containing the targeted vocabulary words
+- Samples sentences from the Aozora Bunko Corpus or tatoeba example sentences containing the targeted vocabulary words
 - Looks up words and kanji in the sentences for readings, definitions, etc.
 - Formats the sentences and lookup information into a simple HTML email
 - Sends the email to your inbox with specified frequency
@@ -24,6 +24,7 @@ This is a pretty barebones language practice service that:
 The dataset used for the current project was pulled from the following:
 
 - [Aozora Bunko Corpus](https://www.kaggle.com/datasets/ryancahildebrandt/azbcorpus)
+- [Tatoeba Sentences](https://tatoeba.org/en/downloads)
 - [Jotoba API](https://jotoba.de)
 
 ---
@@ -51,7 +52,8 @@ Setup is handled via a few key files:
   "n_examples": 2, // number of example sentences per vocab word per email
   "min_len": 0, // shortest allowed sentence
   "max_len": 100, // longest allowed sentence
-  "recipients": ["<recipient email 1>", "<recipient email 2>", ...] //
+  "recipients": ["<recipient email 1>", "<recipient email 2>", ...],
+  "tatoeba": false
 }
 ```
 

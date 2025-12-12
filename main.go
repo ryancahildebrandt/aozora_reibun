@@ -41,7 +41,11 @@ func main() {
 	}
 	log.Printf("read vocab successfully")
 
-	db, err := sql.Open("sqlite", "./data/aozora_corpus.db")
+	dbfile := "./data/aozora_corpus.db"
+	if c.UseTatoeba {
+		dbfile = "./data/tatoeba.db"
+	}
+	db, err := sql.Open("sqlite", dbfile)
 	if err != nil {
 		log.Fatal(err)
 	}

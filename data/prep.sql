@@ -4,7 +4,7 @@
 -- these commands should be run on a sqlite db in the data directory
 DROP TABLE texts;
 CREATE TABLE texts(text TEXT);
-INSERT INTO texts SELECT JSON_EXTRACT(VALUE, '$.text') FROM JSON_EACH(READFILE('data/db.json'));
+INSERT INTO texts SELECT JSON_EXTRACT(VALUE, '$.text') FROM JSON_EACH(READFILE('db.json'));
 
 DROP TABLE vtexts;
 CREATE VIRTUAL TABLE vtexts USING FTS5(text);

@@ -27,4 +27,5 @@ go.work.sum
 aozora_reibun.service
 config.json
 vocab.txt
-data/aozora_corpus.db
+data/*.db
+data/*.json

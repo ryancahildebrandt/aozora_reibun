@@ -18,6 +18,7 @@ type ConfigFields struct {
 	MinLen     int      `json:"min_len"`
 	MaxLen     int      `json:"max_len"`
 	Recipients []string `json:"recipients"`
+	UseTatoeba bool     `json:"tatoeba"`
 }
 
 func ReadConfig() (ConfigFields, error) {
