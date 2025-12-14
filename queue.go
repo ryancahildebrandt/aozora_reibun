@@ -7,8 +7,9 @@ package main
 
 import (
 	"errors"
-	"log"
+	"maps"
 	"math/rand"
+	"slices"
 )
 
 type SentenceQueue = map[string][]string
@@ -26,26 +27,20 @@ func sampleSentences(s SentenceQueue, v int, e int) ([]string, []string, error) 
 		return vv, ss, err
 	}
 
-	for k := range s {
-		if len(keys) == v {
-			break
-		}
-		keys = append(keys, k)
-	}
+	maps.DeleteFunc(s, func(k string, v []string) bool { return len(v) < e })
+	keys = slices.Collect(maps.Keys(s))
 
 	if len(keys) < v {
 		err = errors.New("call to sampleSentences selects more vocabulary words v than exist in sentence queue")
 		return vv, ss, err
 	}
 
-	for _, k := range keys {
-		if e > len(s[k]) {
-			log.Printf("not enough example sentences for vocab %s, skipping", k)
-			continue
+	for len(vv) < v {
+		for _, k := range keys {
+			rand.Shuffle(len(s[k]), func(i, j int) { s[k][i], s[k][j] = s[k][j], s[k][i] })
+			vv = append(vv, k)
+			ss = append(ss, s[k][:e]...)
 		}
-		rand.Shuffle(len(s[k]), func(i, j int) { s[k][i], s[k][j] = s[k][j], s[k][i] })
-		vv = append(vv, k)
-		ss = append(ss, s[k][:e]...)
 	}
 
 	return vv, ss, err
