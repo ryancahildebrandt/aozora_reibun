@@ -35,12 +35,13 @@ func sampleSentences(s SentenceQueue, v int, e int) ([]string, []string, error) 
 		return vv, ss, err
 	}
 
-	for len(vv) < v {
-		for _, k := range keys {
-			rand.Shuffle(len(s[k]), func(i, j int) { s[k][i], s[k][j] = s[k][j], s[k][i] })
-			vv = append(vv, k)
-			ss = append(ss, s[k][:e]...)
+	for _, k := range keys {
+		if len(vv) < v {
+			break
 		}
+		rand.Shuffle(len(s[k]), func(i, j int) { s[k][i], s[k][j] = s[k][j], s[k][i] })
+		vv = append(vv, k)
+		ss = append(ss, s[k][:e]...)
 	}
 
 	return vv, ss, err
