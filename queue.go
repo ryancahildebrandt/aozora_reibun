@@ -36,7 +36,7 @@ func sampleSentences(s SentenceQueue, v int, e int) ([]string, []string, error) 
 	}
 
 	for _, k := range keys {
-		if len(vv) < v {
+		if len(vv) == v {
 			break
 		}
 		rand.Shuffle(len(s[k]), func(i, j int) { s[k][i], s[k][j] = s[k][j], s[k][i] })
