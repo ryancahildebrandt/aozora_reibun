@@ -29,3 +29,4 @@ config.json
 vocab.txt
 data/*.db
 data/*.json
+.golangci.yml
