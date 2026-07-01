@@ -26,6 +26,7 @@ func getSentences(db *sql.DB, q string, v []string) (SentenceQueue, error) {
 	rows, err := db.Query(q)
 	if err != nil {
 		log.Fatal(err)
+		return res, err
 	}
 	defer rows.Close()
 
