@@ -38,6 +38,10 @@ func getSentences(db *sql.DB, q string, v []string) (SentenceQueue, error) {
 			}
 		}
 	}
+	if rows.Err() != nil {
+		log.Fatal(err)
+		return res, err
+	}
 
 	return res, err
 }

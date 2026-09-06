@@ -47,6 +47,7 @@ type ResponseKanji struct {
 type ResponseWord struct {
 	Reading ResponseReading  `json:"reading"`
 	Senses  []ResponseSenses `json:"senses"`
+	Pitch   []ResponsePitch  `json:"pitch"`
 }
 
 type ResponseReading struct {
@@ -59,6 +60,11 @@ type ResponseSenses struct {
 	Glosses  []string `json:"glosses"`
 	POS      any      `json:"pos"`
 	Language string   `json:"language"`
+}
+
+type ResponsePitch struct {
+	Part string `json:"part"`
+	High bool   `json:"high"`
 }
 
 type WordLookup struct {
@@ -178,4 +184,24 @@ func lookupSentence(s string, t *tokenizer.Tokenizer) (SentenceLookups, error) {
 	}
 
 	return sl, err
+}
+
+func processPitch(p []ResponsePitch) string {
+	var b strings.Builder
+
+	b.WriteString("<ruby>")
+	for _, i := range p {
+		b.WriteString(i.Part)
+		b.WriteString("<rt>")
+		switch i.High {
+		case true:
+			b.WriteString(strings.Repeat("‾", len(i.Part)))
+		default:
+			b.WriteString(strings.Repeat("_", len(i.Part)))
+		}
+		b.WriteString("</rt>")
+	}
+	b.WriteString("</ruby>")
+
+	return b.String()
 }

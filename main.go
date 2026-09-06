@@ -39,6 +39,9 @@ func main() {
 	for scanner.Scan() {
 		vocab = append(vocab, strings.TrimSpace(scanner.Text()))
 	}
+	if scanner.Err() != nil {
+		log.Fatal(err)
+	}
 	log.Printf("read vocab successfully")
 
 	dbfile := "./data/aozora_corpus.db"

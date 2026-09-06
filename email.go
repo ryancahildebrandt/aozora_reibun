@@ -61,7 +61,15 @@ func SendEmail(v []string, b string, c ConfigFields) error {
 }
 
 func renderEmail(s []SentenceLookups, b *strings.Builder) (strings.Builder, error) {
-	tmpl := template.Must(template.ParseGlob("./templates/*.gohtml"))
-	err := tmpl.ExecuteTemplate(b, "main", s)
-	return *b, err
+	tmpl, err := template.New("main").Funcs(template.FuncMap{"processPitch": processPitch}).ParseGlob("./templates/*.gohtml")
+	if err != nil {
+		return *b, err
+	}
+
+	err = tmpl.ExecuteTemplate(b, "main", s)
+	if err != nil {
+		return *b, err
+	}
+
+	return *b, nil
 }
